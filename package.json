@@ -1,0 +1,30 @@
+{
+    "name": "rapid-core", 
+    "version": "0.0.1", 
+    "description": "new rapid, clouda+ framework", 
+    "main": "src/rapid-core", 
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "install" : "node init.js"
+    }, 
+    "keywords": [
+        "clouda+", 
+        "javascript", 
+        "cloudajs", 
+        "webapp", 
+        "framework", 
+        "web", 
+        "app", 
+        "api", 
+        "core"
+    ], 
+    "repository": {
+        "type": "git", 
+        "url": "https://github.com/Clouda-team/rapid-core.git"
+    }, 
+    "author": "wangsu <wangsu01@baidu.com>", 
+    "contributors": [
+        "huangxin <huangxin03@baidu.com>"
+    ], 
+    "license": "MIT"
+}
