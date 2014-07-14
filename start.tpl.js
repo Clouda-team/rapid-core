@@ -12,4 +12,4 @@ GLOBAL.CONF_DIR = path.join(ROOT_DIR , "./conf/");
 $_requires_$
 
 // 自动检测配置目录并载入
-clouda.autoConfig();
+rapid.autoConfig();
