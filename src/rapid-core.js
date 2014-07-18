@@ -213,7 +213,6 @@ Object.defineProperties(rapid,{
     					target.watch(name,(function(i){
     						return function(value){
     							rs[i] = value;
-    							console.log(rs);
     							
     							if(--waitingNum <= 0){
     								console.log("done!!");
@@ -260,7 +259,7 @@ Object.defineProperties(rapid,{
      */
     includeJS:{
     	value:function(name){
-    		debugger;
+//    		debugger;
     		var fname = path.resolve(name);
     		var depends = parseJSFile(fname);
     		if(depends.length == 0){
