@@ -3,6 +3,12 @@
  */
 require("../src/rapid-core.js");
 
+var assert = require('assert');
+
+var define = rapid.define;
+var watch = rapid.watch;
+var use = rapid.use;
+
 define({"config.rapid-log":{
         /**
         * 日志级别, 由细到粗为
@@ -60,6 +66,7 @@ watch("config.testConfig",function(conf){
 	// define的另一种写法
 	define("plugin.outConfigSum",{
 		out:function(){
+			assert(conf.a == 100 & conf.b ==200 && conf.c == 300 , "values of config is not right");
 			return conf.a + conf.b + conf.c;
 		}
 	});

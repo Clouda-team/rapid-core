@@ -158,6 +158,19 @@ function Watcher(__rush){
 					traps.splice(index,1);
 				}
 			}
+		},
+		"use":{
+			configurable:false,
+			enumerable:false,
+			writable:false,	
+			value:function(name,handle){
+				
+				if(!handle){
+					return this[name];	//sync return, the return 'undefined' is passable
+				}
+				
+				this.watch(name,handle,true); // async
+			}
 		}
 		
 	});

@@ -195,8 +195,8 @@ if(typeof(rapid) != "undefined"){
 	
 	var watchConfig = function(conf){
 		clearTimeout(timer);
-		GLOBAL.log = init(conf);
-		log.info("rapid-log start...");
+		GLOBAL.log = rapid.log = init(conf);
+		rapid.log.info("rapid-log start...");
 		rapid.plugin.defineSync("rapid-log",function(){
 			return GLOBAL.log;
 		});
