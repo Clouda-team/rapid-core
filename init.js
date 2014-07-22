@@ -7,6 +7,8 @@ var pkgpath = path.resolve(cwdpath, "./package.json");
 var startpath = path.resolve(cwdpath, "./start.js");
 var tplpath = path.resolve(__dirname, "./start.tpl.js");
 
+console.log('@pkgpath:', pkgpath);
+
 fs.exists(pkgpath, function (exists) {
 
 	if(exists) {
@@ -34,10 +36,13 @@ fs.exists(pkgpath, function (exists) {
 
 					});
 
+
+					console.log('@tplpath:', tplpath);
 					fs.readFile(tplpath, function(err, tpl){
 
 						var content = tpl.toString().replace("$_requires_$", requires);
 
+						console.log('@startpath:', startpath);						
 						fs.writeFile(startpath, content);
 
 					});

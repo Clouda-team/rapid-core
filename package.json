@@ -1,11 +1,10 @@
 {
     "name": "rapid-core", 
-    "version": "0.0.1", 
+    "version": "0.0.2", 
     "description": "new rapid, clouda+ framework", 
     "main": "src/rapid-core", 
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "install" : "node init.js"
+        "test": "echo \"Error: no test specified\" && exit 1"
     }, 
     "keywords": [
         "clouda+", 
