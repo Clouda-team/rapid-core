@@ -215,7 +215,6 @@ Object.defineProperties(rapid,{
     							rs[i] = value;
     							
     							if(--waitingNum <= 0){
-    								console.log("done!!");
             						cb.apply(null,rs);
             					} 
     						}
