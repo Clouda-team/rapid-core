@@ -1,6 +1,6 @@
 {
     "name": "rapid-core", 
-    "version": "0.0.2", 
+    "version": "0.0.4", 
     "description": "new rapid, clouda+ framework", 
     "main": "src/rapid-core", 
     "scripts": {

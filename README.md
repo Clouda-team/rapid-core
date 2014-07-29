@@ -1,5 +1,13 @@
-# rapid-core
-> rapid-core, 是用于rapid+ framework中进行资源管理与载入控制的核心部份.
+# Rapid-core
+
+[![NPM version](https://badge.fury.io/js/rapid-core.svg)](http://badge.fury.io/js/rapid-core)
+[![Dependency Status](https://david-dm.org/clouda-team/rapid-core.svg)](https://david-dm.org/clouda-team/rapid-core)
+
+> RapidJS是一款基于Nodejs的、专门为灵活多变的web业务而设计的服务端开源开发框架。其目标是支撑开发者从业务搭建之初，到产品成长、成熟的整个迭代过程，RapidJS从设计之初便在系统的延展性及适用方式上做了大量考虑。
+
+> RapidJS从核心层将整个系统抽象为「plugin」（执行资源），「configure」（配置资源），「resource」（公用资源）三类资源，并尽量使所有功能模块「可插接」、「可替换」、「可公用」， 从而使框架无论在「业务层」，「接入层」或「中间层」中都能出色工作。此外，RapidJS提供了插件机制，开发者能方便地使用和分享插件。
+
+> 就如同大多数nodejs框架一样，RapidJS也是简洁而富有表现力的。
 
 ## What is this?
 rapid将一个系统的各种资源进行划分后抽像为三类资源,即config(配置信息),resource(运行时可变资源),plugin(可运行的提供功能的内容).三类资源通过相互间的交叉引用构成整个系统的运行时架构. 所有开发过程中都需要解决的即是资源的管控. rapid-core将主要用于提供这三类资源管理及载入方案.
@@ -184,80 +192,8 @@ rapid将一个系统的各种资源进行划分后抽像为三类资源,即confi
 			
 		},1000);
 		
-##API Document
-
-###全局属性和方法
-
-> rapid在全局范围内创建了几个属性和方法用于改善调用复杂度,一般情况下,使用这些方法就能很好的使用rapid-core.
-
-####ROOT_DIR
-指向启动文件所在的目录. 一般认为这个目录应该是应用的根目录.
-
-####USER_DIR
-用户文件的目录. 默认为: ROOT_DIR/app/
-
-####CONF_DIR
-存放配置文件的目录,默认为: ROOT_DIR/conf/, 系统将自动监测这个目录并载入下面的js文件
-
-####define(map)
-rapid.define()的快捷方式
-
-####watch(key1,key2,key3...keyN,callback);
-rapid.watch()的快捷方式
-
-#### ***use(key);***
-同步返回key所表示的资源内容.如果不存在则返回undefined, 
-
-***这个方法在被requireDir所载入的文件中被使用时. 将被框架监测其中key所指资源是否存在,做为一种依赖的声明. 只有在资源存在时才真正载入这个文件.从而使use方法返回正确的值. ***
-
-*** !!! 需要注意的是,当文件中存在循环依赖时,可能导至一个或多个文件永远不能被载入,所以使用时应当小心这种情况 ***
+## [Rapid-core API Document ](http://cloudaplus.duapp.com/rapid/core/api_document)
 
 
-###对像
+## [To learn more](http://cloudaplus.duapp.com/)
 
-####Watcher
-一个可监测自身变改的名称空间对像. 提供define,watch,remove,unwatch.四个方法.
-
-#####define(name,value)
-用于定义或改变当前空间的下属资源.
-
-#####remove(name)
-用于删除一个已定义的资源
-
-#####watch(name,handle,once)
-用于监视一资源的变化,无论对应资源是否存在.
-
-#####unwatch(name,handle)
-删除对一个资源的一个监视方法.
-
-
-### 属性
-####rapid.resource
-一个watcher对像, 用于存放在全局范围内运行时会改变的一类资源.
-
-####rapid.config
-一个watcher对像, 用于存放在全局范围内运行时不会改变或很少改变的一类配置资源
-
-####rapid.plugin
-一个watcher对像, 用于存放在在全局范内被公开访问的可执行的插件资源
-	
-###方法
-
-####rapid.define(obj);
-提供一个简单的方式来定义多个资源.方法接收一个map,其key为使用 "."分隔的资源名称的表示,前半部份应该为resource,config.plugin三者之一.
-
-####rapid.watch(key1,key2,key3...keyN,callback);
-提供一个简单的方式同时监测多个资源是否存在. 当所有资源都存在时,执行一个回调.并以相同的顺序将所需的资源传入callback中. 其key应为使用"."分隔的资源名称的表示,前半部份应该为resource,config.plugin三者之一.
-
-####rapid.requireDir(path,limit,isAbsPath);
-用于载入一个目录下的js文件.
-
-path {string}: 目标路径.
-
-limit {RegExp}: 用于限制载入文件的一个正则对像,只载入名称相配置的文件,而忽略其它的.
-
-isAbsPath {Boolean}: 用于标识path所表示的是否为绝对路径.当值为isAbsPath不明确为true时,当path以 "/" 开头, 将会在自动在前面补充 ROOT_DIR + path 进行访问
-
-
-####rapid.createWatcher();
-取得一个watcher对像的工厂方法
