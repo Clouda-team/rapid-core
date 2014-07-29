@@ -192,7 +192,7 @@ rapid将一个系统的各种资源进行划分后抽像为三类资源,即confi
 			
 		},1000);
 
-## 详细API文档		
+## 使用手册		
 
 * [Rapid-core API Document ](http://cloudaplus.duapp.com/rapid/core/api_document)
 * [To learn more](http://cloudaplus.duapp.com/)
