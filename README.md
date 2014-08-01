@@ -12,11 +12,9 @@
 ## What is this?
 rapid将一个系统的各种资源进行划分后抽像为三类资源,即config(配置信息),resource(运行时可变资源),plugin(可运行的提供功能的内容).三类资源通过相互间的交叉引用构成整个系统的运行时架构. 所有开发过程中都需要解决的即是资源的管控. rapid-core将主要用于提供这三类资源管理及载入方案.
 
-	rapid.plugin : 提供可执行的功能的部分被定义为插件.每个插件都将实现一种特定的能力(如包装数据源访问,提供httpServer或socketServer的包装能力等.)
-
-	rapid.config : 系统启动前被载入的并且一般在运行时不会产生变化的配置信息被归为config
-
-	rapid.resource : 在系统运行时产生的,整个运行过程中,会产生变化的数据被归类为resource.
+* rapid.plugin : 提供可执行的功能的部分被定义为插件.每个插件都将实现一种特定的能力(如包装数据源访问,提供httpServer或socketServer的包装能力等.)
+* rapid.config : 系统启动前被载入的并且一般在运行时不会产生变化的配置信息被归为config
+* rapid.resource : 在系统运行时产生的,整个运行过程中,会产生变化的数据被归类为resource.
 
 其中config与resource在运行时并没有差异,只是在名称上做了区分.
 
