@@ -1,7 +1,7 @@
 /**
- * @file 乱槽槽的工具方法.
  * @author wangsu01@baidu.com
  * @module rapid/tools
+ * @file 工具方法.
  */
 /**
  * 生成包含[a-zA-Z0-9]的指定长度的随机字符串

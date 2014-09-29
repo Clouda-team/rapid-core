@@ -1,11 +1,9 @@
 /**
  * rapid-core
  * 
- * 实现启动控制,文件载入,资源管理等功能.
- * 
  * @module rapid
  * @author wangsu01@baidu.com
- * @file rapid-core.js
+ * @file rapid-core.js 实现启动控制,文件载入,资源管理等功能.
  */
 
 var path = require('path');

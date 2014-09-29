@@ -1,6 +1,6 @@
 /**
  * @author wangsu01@baidu.com
- * @file Watcher对像.
+ * @file Watcher对像. 一个可监测变化的对像
  */
 
 /**

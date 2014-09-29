@@ -1,7 +1,7 @@
 /**
- * @file 日志工具
  * @author wangsu
  * @module rapid/log
+ * @file 日志控制工具
  */
 var format = require("util").format;
 var fs = require('fs');
