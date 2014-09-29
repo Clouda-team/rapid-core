@@ -1,15 +1,29 @@
 /**
+ * @author wangsu01@baidu.com
+ * @file Watcher对像.
+ */
+
+/**
+ * 
  * 一个可监测变化的对像
  * __rush, 是否立即触发监视资源的变化, 当明确为false的时候,才进行优化处理.
+ * @class Watcher
+ * @param {boolean} _rush 用于控制是否需要在每次变化值的时候触发watch回调, 
+ *      如果设置为true,则会合并在同一次eventloop执行期间对同一个资源的改变为一次watch触发(用于节省性能,只取最终结果);
+ *      如果设置为false, 则会在每次资源变化的时候都触发watch.
+ *      default:false
  */
 function Watcher(__rush){
 	
 	var trapPool = {};
 	
-	/**
-	 * 定义一个资源
-	 */
-	Object.defineProperties(this,{
+	Object.defineProperties(this,/** @lends Watcher */{
+	    /**
+	     * 定义一个资源
+	     * @method
+	     * @param {string} name 资源名称
+	     * @param {any} value 资源值
+	     */
 		'define':{
 			configurable:true,
 			enumerable:false,
@@ -84,6 +98,8 @@ function Watcher(__rush){
 		},
 		/**
 		 * 移除一个资源
+		 * @method
+		 * @param {string} name  将删除的资源名称
 		 */
 		'remove':{
 			configurable:false,
@@ -99,11 +115,18 @@ function Watcher(__rush){
 				return delete this[name];
 			}
 		},
-		
 		/**
-		 * 添加监视
+		 * callback of the watch method;
+		 * @callback Watcher.watchHandle
+		 * @param {any} newValue 每次变化后的值
 		 */
-		
+		/**
+		 * 添加一个资源监视,每次资源变更的时候将得到通知
+		 * @method
+		 * @param {string} name 资源名称
+		 * @param {Watcher.watchHandle} handle 当资源变化时被触发的值.
+		 * @param {boolean} once 是否只触发一次, 默认为false,即持续监视
+		 */
 		'watch':{
 			configurable:false,
 			enumerable:false,
@@ -141,6 +164,7 @@ function Watcher(__rush){
 		
 		/**
 		 * 移除监视
+		 * @method
 		 */
 		'unwatch':{
 			configurable:false,
@@ -159,6 +183,9 @@ function Watcher(__rush){
 				}
 			}
 		},
+		/**
+		 * @method
+		 */
 		"use":{
 			configurable:false,
 			enumerable:false,
