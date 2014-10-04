@@ -138,7 +138,7 @@ var init = function(conf){
     }
     
     // 处理配置级别
-    if(conf.level){
+    if(conf.level !== undefined){
         
         if(typeof(conf.level) == "number"){
             currentLevel = conf.level;
