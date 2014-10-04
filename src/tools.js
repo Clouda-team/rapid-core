@@ -1,8 +1,15 @@
 /**
+ * @file 一些工具方法
  * @author wangsu01@baidu.com
  * @module rapid/tools
- * @file 工具方法.
  */
+
+var _argsToArr = (function(slice){
+    return function(args){
+        return slice.call(args,0);
+    };
+})(Array.prototype.slice);
+
 /**
  * 生成包含[a-zA-Z0-9]的指定长度的随机字符串
  * @param {number} len 指定长度,默认为 10;
@@ -12,7 +19,6 @@ var randomStr = function(_len){
 	var rv,str = [] , len = _len || 10;
 	for(; str.length < len ; str.push((~~(Math.random() * 36)).toString(36)));
 	rv = str.join("");
-	str.length = 0;
 	return rv; 
 };
 
@@ -62,13 +68,41 @@ var cleanJSFile = function(content,keepCRLF){
 		content = content.replace(reg_removeLF,"");
 	}
 	return content;
-}
-
-
-var tools = {
-    randomStr: randomStr,
-    getFunArgs:getFunArgs,
-    cleanJSFile:cleanJSFile
+};
+/**
+ * 用于包装setImmediate,nextTick,setTimeout,
+ * 便于在下一个eventLoop中执行一个function.
+ * 
+ * @inner
+ * @param {function} arg0 将被执行的function
+ * @param {any} arg1,arg2...argN 被传入function的参数
+ */
+var _runnext = function(){
+    var _args = _argsToArr(arguments);
+    if(typeof(setImmediate) == "function"){
+        // 存在setImmediate则直接使用
+        setImmediate.apply(null,_args);
+    }else if(process && process.nextTick instanceof Function){
+        // 0.10之前,没有setImmediate.
+        process.nextTick(function(){
+            var args = _args.slice(0);
+            var runner = args.shift();
+            runner.apply(null,args);
+        });
+    }else{
+        // 非node环境没有process对像
+        _args.splice(1,0,0);    // make the args[1] is 0  
+        setTimeout.apply(null,arguments);
+    }
 };
 
-module.exports = tools;
+/**
+ * @export rapid/tools
+ */
+module.exports = {
+    randomStr: randomStr,
+    getFunArgs:getFunArgs,
+    cleanJSFile:cleanJSFile,
+    _runnext:_runnext,
+    _argsToArr:_argsToArr
+};

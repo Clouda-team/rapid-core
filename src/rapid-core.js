@@ -6,8 +6,12 @@
  * @file rapid-core.js 实现启动控制,文件载入,资源管理等功能.
  */
 
+
 var path = require('path');
 var fs = require('fs');
+
+require("./extendProto.js");
+
 var tools = require("./tools.js");
 var Watcher = require('./watcher.js');
 
@@ -95,31 +99,64 @@ var parseJSFile = function(fname,cb){
  * @global
  * @exports rapid
  * @namespace {Function} rapid
- * @param arg {string|object|function}
- * @param cb {function}
- * @return {any}
+ */
+/**
+ * 一个万能方法.根据参数的不同会有不同的调用行为.
+ * 如果调用方式为rapid({string}),将执行rapid.use
+ * 如果调用方式为rapid({string},[string],[string]...,{function}), 将执行rapid.watch
+ * 如果调用方式为rapid({array<string>},{function}),将执行rapid.watch
+ * 如果调用方式为rapid({Map}),将执行rapid.define;
+ * 如果调用血方式为rapid({function}),将执行_runnext;
+ * @method rapid.::self
+ * @param {string|object|function} arg 
+ * @param {function} cb
+ * @returns {any}
  */
 var rapid = function(arg,cb){
     
-    cb = cb || arg;
-    if(!cb instanceof Function){
+    if(arguments.length > 2){
+        arg = tools._argsToArr(arguments); 
+        cb = arg.pop();
+    }else{
+        cb = cb || arg;
+    }
+    
+    if(!(cb instanceof Function)){
         cb = null;
     }
     
+    
 	switch(toString.call(arg)){
 		case "[object String]" :
-		    
+		    if(cb){
+		        rapid.watch(arg,cb);
+		    }else{
+		        return rapid.use(arg);
+		    }
 			break;
 		case "[object Object]" :
 			// define map
+		    rapid.define.call(rapid,arg);
 			break;
 		case "[object Function]" :
-			//callback
-			break;
+		    cb = arg;
+		    arg = [];
+		    rapid._runnext(cb);
+		    break;
 		case "[object Array]" :
+		    
 			//callback when the depends all readied
+		    if(!cb){
+		        throw new Error("missing callback");
+		        return;
+		    }
+		    
+		    arg = arg.slice(0);
+		    arg.push(cb);
+		    rapid.watch.apply(rapid,arg);
 			break;
 		default:
+		    return false;
 	}
 };
 
@@ -136,7 +173,7 @@ var rapid = function(arg,cb){
  * @alias rapid.ROOT_DIR
  * @see rapid.ROOT_DIR
  */
-rapid.ROOT_DIR = GLOBAL.ROOT_DIR = GLOBAL.ROOT_DIR || path.join( process.argv[1] || __dirname, "../");
+rapid.ROOT_DIR = GLOBAL.ROOT_DIR = GLOBAL.ROOT_DIR || process.cwd() || path.join(__dirname, "../");
 
 /**
  * environment variable, direct to the app director of the application
@@ -160,6 +197,12 @@ rapid.USER_DIR = GLOBAL.USER_DIR = GLOBAL.USER_DIR || path.join(ROOT_DIR , "./ap
  * @alias rapid.CONF_DIR
  */
 rapid.CONF_DIR = GLOBAL.CONF_DIR = GLOBAL.CONF_DIR || path.join(ROOT_DIR , "./conf/");
+
+
+rapid._argsToArr = tools._argsToArr;
+rapid._runnext = tools._runnext;
+rapid._randomStr = tools.randomStr;
+rapid._getFunArgs = tools.getFunArgs;
 
 
 Object.defineProperties(rapid, /** @lends rapid  */ {
@@ -276,9 +319,9 @@ Object.defineProperties(rapid, /** @lends rapid  */ {
      */
     watch:{
         	value:function(/*arg1,arg2...argN,cb*/){
-        		
-        		var cb = Array.prototype.pop.call(arguments);
-        		var len = arguments.length;
+        		var args = tools._argsToArr(arguments);
+        		var cb = args.pop();
+        		var len = args.length;
         		
         		var keyParts , arg , type, target , name;
         		var waitingNum = 0;
@@ -293,29 +336,33 @@ Object.defineProperties(rapid, /** @lends rapid  */ {
         			return;
         		}
         		
-        		for(var index in arguments){
-        			arg = arguments[index];
+        		for(var index = 0 ; index < len ; index++ ){
+        			arg = args[index];
         			keyParts = arg.split(".");
         			
         			if(keyParts.length == 2){
         				type = keyParts[0];
         				name = keyParts[1];
-        				target = rapid[type];
-        				
-        				if(target){
-        					waitingNum ++;
-        					target.watch(name,(function(i){
-        						return function(value){
-        							rs[i] = value;
-        							
-        							if(--waitingNum <= 0){
-                						cb.apply(null,rs);
-                					} 
-        						}
-        					})(index),true)
-        				}
+        			}else if(keyParts.length == 1){
+        			    type = "plugin";
+        			    name = keyParts[0];
+        			}else{
+        			    stdLog(["ignore call watch() with path '%s'" , arg], "WARN");
+        			    return;
         			}
-    
+        			
+        			if(target = rapid[type]){
+        			    waitingNum ++;
+        			    target.watch(name,(function(i){
+        			        return function(value){
+        			            rs[i] = value;
+        			            
+        			            if(--waitingNum <= 0){
+        			                cb.apply(null,rs);
+        			            } 
+        			        }
+        			    })(index),true)
+        			}
         		}
         		
         		return rapid;
@@ -585,7 +632,6 @@ var definePlugin = function(name,depends,factory){
             return;
         }
         
-        
         working[name] = exports;
         
         stdLog(["Plug-in : Loaded [%s]" , name],'info');
@@ -594,11 +640,7 @@ var definePlugin = function(name,depends,factory){
         oldDefineOfPlugin.call(Plugin,name,exports);
         
         // 检测可启动插件;
-        if(typeof(setImmediate) == 'function'){
-        	    setImmediate(checkSetup);
-        }else{
-            process.nextTick(checkSetup);
-        }
+    	    setImmediate(checkSetup);
     };
     
     // 无依赖，直接启动
@@ -622,11 +664,7 @@ var definePlugin = function(name,depends,factory){
     }
     
     // 检测可启动插件;
-    if(typeof(setImmediate) == 'function'){
-    	    setImmediate(checkSetup);
-    }else{
-        process.nextTick(checkSetup);
-    }
+    setImmediate(checkSetup);
 };
 
 /**
@@ -703,11 +741,7 @@ var definePluginSync = function(name,depends,factory){
     }
     
     // 检测可启动插件;
-    if(typeof(setImmediate) == 'function'){
     	setImmediate(checkSetup);
-    }else{
-    	process.nextTick(checkSetup);
-    }
 };
 
 

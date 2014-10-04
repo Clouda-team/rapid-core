@@ -1,6 +1,6 @@
 /**
- * @author wangsu01@baidu.com
  * @file Watcher对像. 一个可监测变化的对像
+ * @author wangsu01@baidu.com
  */
 
 /**
@@ -109,7 +109,7 @@ function Watcher(__rush){
 				//这里创建后就始终保持一个引用不再创建新数组;
 				var traps = trapPool[name];
 				if(traps){
-					traps.length = 0;
+					traps.clean();
 					delete trapPool[name];
 				}
 				return delete this[name];
